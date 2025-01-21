@@ -67,69 +67,54 @@ func (k *KeyBonding) Launching() error {
 	}
 	return nil
 }
-func altgr(event C.CGEventRef) {
-	alt(event)
-}
-func shift(event C.CGEventRef) {
-	C.AddActionKey(_VK_SHIFT, event)
-}
-func ctrl(event C.CGEventRef) {
-	C.AddActionKey(_VK_CTRL, event)
-}
-func alt(event C.CGEventRef) {
-	C.AddActionKey(_VK_ALT, event)
-}
-func cmd(event C.CGEventRef) {
-	C.AddActionKey(_VK_CMD, event)
-}
 func (k KeyBonding) keyPress(key int) {
 	downEvent := C.CreateDown(C.int(key))
+	var eventFlags C.CGEventFlags
 	if k.hasALT {
-		alt(downEvent)
+		eventFlags |= _VK_ALT
 	}
 	if k.hasCTRL {
-		ctrl(downEvent)
+		eventFlags |= _VK_CTRL
 	}
 	if k.hasSHIFT {
-		shift(downEvent)
+		eventFlags |= _VK_SHIFT
 	}
 	if k.hasRCTRL { //not support on mac
-		ctrl(downEvent)
 	}
 	if k.hasRSHIFT { //not support on mac
-		shift(downEvent)
 	}
 	if k.hasALTGR {
-		altgr(downEvent)
+		eventFlags |= _VK_ALT
 	}
 	if k.hasSuper {
-		cmd(downEvent)
+		eventFlags |= _VK_CMD
 	}
+	C.AddActionKey(eventFlags, downEvent)
 	C.KeyTap(downEvent)
 }
 func (k KeyBonding) keyRelease(key int) {
 	upEvent := C.CreateUp(C.int(key))
+	var eventFlags C.CGEventFlags
 	if k.hasALT {
-		alt(upEvent)
+		eventFlags |= _VK_ALT
 	}
 	if k.hasCTRL {
-		ctrl(upEvent)
+		eventFlags |= _VK_CTRL
 	}
 	if k.hasSHIFT {
-		shift(upEvent)
+		eventFlags |= _VK_SHIFT
 	}
 	if k.hasRCTRL { //not support on mac
-		ctrl(upEvent)
 	}
 	if k.hasRSHIFT { //not support on mac
-		shift(upEvent)
 	}
 	if k.hasALTGR {
-		altgr(upEvent)
+		eventFlags |= _VK_ALT
 	}
 	if k.hasSuper {
-		cmd(upEvent)
+		eventFlags |= _VK_CMD
 	}
+	C.AddActionKey(eventFlags, upEvent)
 	C.KeyTap(upEvent)
 }
 func (k KeyBonding) tapKey(key int) {
